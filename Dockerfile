@@ -20,8 +20,5 @@ RUN apk --no-cache add ca-certificates
 
 WORKDIR /app
 
-RUN addgroup -S app && adduser -S app -G app
-USER app:app
-
 COPY --from=build-env /build/5stars/5stars /app/
 CMD /app/5stars
