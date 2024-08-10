@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// StartInternal webserver for acme challenges
 func StartInternal(httpHandler http.Handler) {
 	srv := &http.Server{
 		Addr:    ":80",

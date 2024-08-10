@@ -6,10 +6,9 @@ import (
 	"net/http"
 )
 
-func StartExternal(
-	certProvider func(info *tls.ClientHelloInfo) (*tls.Certificate, error),
-	h http.Handler,
-) error {
+type CertificateProvider func(info *tls.ClientHelloInfo) (*tls.Certificate, error)
+
+func StartExternal(certProvider CertificateProvider, h http.Handler) error {
 	server := &http.Server{
 		Addr: ":443",
 		TLSConfig: &tls.Config{

@@ -10,23 +10,23 @@ import (
 )
 
 func main() {
-	internalHandler := http.NewServeMux()
+	internalRoutes := http.NewServeMux()
+	externalRoutes := http.NewServeMux() //this is an internet facing webserver with https
 
-	domainPolicy := domain.NewDynamicHostPolicy()
+	domainStorage := domain.NewStorage()
+	domainPolicy := domain.NewDynamicHostPolicy(domainStorage)
 
 	acmeManager := acme.NewAcmeManager(domainPolicy.AllowHost)
-	internalHandler.Handle("/", acmeManager.HTTPHandler(nil))
+	internalRoutes.Handle("/", acmeManager.HTTPHandler(nil))
+	infra.StartInternal(internalRoutes)
 
-	domainHandler := domain.NewHandler(domainPolicy.AddDomain)
-	internalHandler.Handle("/add-domain", domainHandler)
+	domainHandler := domain.NewHandler(domainStorage)
+	domainHandler.RegisterRoutes(externalRoutes)
 
-	infra.StartInternal(internalHandler)
+	redirectHandler := redirect.NewRedirectHandler(domainStorage)
+	redirectHandler.RegisterRoutes(externalRoutes)
 
-	externalHandler := http.NewServeMux()
-	redirectHandler := redirect.NewRedirectHandler()
-	externalHandler.Handle("/", redirectHandler)
-
-	err := infra.StartExternal(acmeManager.GetCertificate, externalHandler)
+	err := infra.StartExternal(acmeManager.GetCertificate, externalRoutes)
 	if err != nil {
 		log.Fatalf("failed to start external HTTPS server: %v", err)
 	}
