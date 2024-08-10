@@ -35,7 +35,7 @@ func NewStorage() (Storage, error) {
 	case StorageTypeInMemory:
 		return NewInMemoryStorage(), nil
 	default:
-		log.Println("falling back to in-memory storage type as DOMAIN_STORAGE_TYPE is emtpy")
+		log.Println("falling back to in-memory storage type as DOMAIN_STORAGE_TYPE is empty")
 		return NewInMemoryStorage(), nil
 	}
 }
@@ -64,7 +64,18 @@ func NewRedisStorage() (*RedisStorage, error) {
 
 	log.Println("redis ping success to " + redisUrl)
 
-	return &RedisStorage{baseClient: cl}, nil
+	st := &RedisStorage{baseClient: cl}
+
+	appDomain := os.Getenv("APP_DOMAIN")
+	if appDomain != "" {
+		err := st.Add(appDomain, "")
+		if err != nil {
+			return nil, err
+		}
+		log.Printf("added app domain to the list of supported cetrificate domains: %s\n", appDomain)
+	}
+
+	return st, nil
 }
 
 func (s *RedisStorage) buildKey(host string) string {
