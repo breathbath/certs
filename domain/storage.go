@@ -51,7 +51,7 @@ func NewRedisStorage() (*RedisStorage, error) {
 	}
 
 	cl := redis.NewClient(&redis.Options{
-		Addr:     ":6379",
+		Addr:     redisUrl,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
