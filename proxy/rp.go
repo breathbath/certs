@@ -72,6 +72,7 @@ func NewReverseProxy(target string) (*httputil.ReverseProxy, error) {
 	rp := httputil.NewSingleHostReverseProxy(proxyTargetURL)
 	originalDirector := rp.Director
 	rp.Director = func(req *http.Request) {
+		originalDirector(req)
 		req.Header.Set("X-Original-Host", req.Host)
 		// Preserve the original X-Forwarded-For header if it exists, and add the client's IP
 		clientIP := req.RemoteAddr
@@ -82,8 +83,7 @@ func NewReverseProxy(target string) (*httputil.ReverseProxy, error) {
 		}
 
 		req.Header.Set("X-Real-IP", clientIP)
-
-		originalDirector(req)
+		req.Host = proxyTargetURL.Host
 
 		utils.LogRequest(req, false)
 	}
