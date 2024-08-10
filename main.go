@@ -13,7 +13,11 @@ func main() {
 	internalRoutes := http.NewServeMux()
 	externalRoutes := http.NewServeMux() //this is an internet facing webserver with https
 
-	domainStorage := domain.NewStorage()
+	domainStorage, err := domain.NewStorage()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	domainPolicy := domain.NewDynamicHostPolicy(domainStorage)
 
 	acmeManager := acme.NewAcmeManager(domainPolicy.AllowHost)
@@ -26,7 +30,7 @@ func main() {
 	reverseProxyHandler := proxy.NewReverseProxyHandler(domainStorage)
 	externalRoutes.Handle("/", reverseProxyHandler)
 
-	err := infra.StartExternal(acmeManager.GetCertificate, externalRoutes)
+	err = infra.StartExternal(acmeManager.GetCertificate, externalRoutes)
 	if err != nil {
 		log.Fatalf("failed to start external HTTPS server: %v", err)
 	}

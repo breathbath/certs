@@ -11,7 +11,7 @@ import (
 )
 
 type TargetProvider interface {
-	GetTarget(host string) string
+	Get(host string) (string, error)
 }
 
 type ReverseProxyHandler struct {
@@ -29,7 +29,12 @@ func NewReverseProxyHandler(targetProvider TargetProvider) *ReverseProxyHandler 
 func (h *ReverseProxyHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	utils.LogRequest(r, true)
 
-	target := h.targetProvider.GetTarget(r.Host)
+	target, err := h.targetProvider.Get(r.Host)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "failed to read target domain", http.StatusInternalServerError)
+	}
+
 	if target == "" {
 		log.Printf("failed to find a supported target for host %s\n", r.Host)
 

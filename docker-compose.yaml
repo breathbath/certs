@@ -1,0 +1,23 @@
+services:
+  acme_rp:
+    image: ghcr.io/breathbath/certs:master
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: Always
+    environment:
+      AUTH_KEY: ${AUTH_KEY}
+      APP_DOMAIN: ${APP_DOMAIN}
+      DOMAIN_STORAGE_TYPE: redis
+      REDIS_URL: redis
+    volumes:
+      - ./.certs:/app/.certs:rw
+    depends_on:
+      - redis
+  redis:
+    image: "redis:alpine"
+    restart: Always
+    ports:
+      - "6379:6379"
+    volumes:
+      - /.redis:/data

@@ -58,6 +58,8 @@ curl https://$APP_DOMAIN/add-domain?domain=$CLIENT_DOMAIN&target=$TARGET_SERVER 
 ## Configuration parameters
 - AUTH_KEY to authenticate requests for managing supported domains and reverse proxy targets
 - APP_DOMAIN the domain name of `AcmeReverseProxy` service and a corresponding CNAME value of customer domains
+- DOMAIN_STORAGE_TYPE (redis or in-memory): the type of the storage to use for storing associations between domains and targets (e.g. `whitelabel.yourclient.com` => `https://yourserver.com`). If redis type is selected, you should also provide REDIS_URL env variable
+- REDIS_URL: url of redis cache if DOMAIN_STORAGE_TYPE env variable is redis
 
 ## Endpoints
 

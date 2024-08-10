@@ -11,11 +11,11 @@ import (
 )
 
 type Handler struct {
-	storage *Storage
+	storage Storage
 	authKey string
 }
 
-func NewHandler(storage *Storage) *Handler {
+func NewHandler(storage Storage) *Handler {
 	authKey := os.Getenv("AUTH_KEY")
 	if authKey == "" {
 		newUUID := uuid.New()
