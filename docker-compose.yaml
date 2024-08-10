@@ -4,7 +4,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    restart: Always
+    restart: always
     environment:
       AUTH_KEY: ${AUTH_KEY}
       APP_DOMAIN: ${APP_DOMAIN}
@@ -16,7 +16,7 @@ services:
       - redis
   redis:
     image: "redis:alpine"
-    restart: Always
+    restart: always
     ports:
       - "6379:6379"
     volumes:
