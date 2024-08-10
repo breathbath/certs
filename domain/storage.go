@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"log"
 	"os"
 	"sync"
 )
@@ -14,6 +15,7 @@ func NewStorage() *Storage {
 
 	appDomain := os.Getenv("APP_DOMAIN")
 	if appDomain != "" {
+		log.Printf("added app domain to the list of supported cetrificate domains: %s", appDomain)
 		st.Add(appDomain, "")
 	}
 
@@ -25,15 +27,15 @@ func (s *Storage) HasDomain(host string) bool {
 	return ok
 }
 
-func (s *Storage) Add(host, redirectTarget string) {
-	s.data.Store(host, redirectTarget)
+func (s *Storage) Add(host, target string) {
+	s.data.Store(host, target)
 }
 
 func (s *Storage) Remove(domain string) {
 	s.data.Delete(domain)
 }
 
-func (s *Storage) GetRedirectTarget(host string) string {
+func (s *Storage) GetTarget(host string) string {
 	target, ok := s.data.Load(host)
 	if ok {
 		return target.(string)

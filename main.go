@@ -4,7 +4,7 @@ import (
 	"github.com/breathbath/certs/acme"
 	"github.com/breathbath/certs/domain"
 	"github.com/breathbath/certs/infra"
-	"github.com/breathbath/certs/redirect"
+	"github.com/breathbath/certs/proxy"
 	"log"
 	"net/http"
 )
@@ -23,8 +23,8 @@ func main() {
 	domainHandler := domain.NewHandler(domainStorage)
 	domainHandler.RegisterRoutes(externalRoutes)
 
-	redirectHandler := redirect.NewRedirectHandler(domainStorage)
-	redirectHandler.RegisterRoutes(externalRoutes)
+	reverseProxyHandler := proxy.NewReverseProxyHandler(domainStorage)
+	externalRoutes.Handle("/", reverseProxyHandler)
 
 	err := infra.StartExternal(acmeManager.GetCertificate, externalRoutes)
 	if err != nil {

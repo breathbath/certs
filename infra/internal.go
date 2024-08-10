@@ -14,7 +14,7 @@ func StartInternal(httpHandler http.Handler) {
 
 	// Starting HTTP server for Let's Encrypt challenge handlers
 	go func() {
-		log.Printf("Starting HTTP server on %s for internal infra handling", srv.Addr)
+		log.Printf("Starting HTTP server on %s", srv.Addr)
 		err := srv.ListenAndServe()
 		if err != nil {
 			log.Fatalf("could not start HTTP server: %v", err)
