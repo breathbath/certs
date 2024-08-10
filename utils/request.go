@@ -12,5 +12,5 @@ func LogRequest(r *http.Request, withBody bool) {
 		log.Printf("failed to dump request: %v\n", err)
 	}
 
-	log.Printf("Request: %s\n", string(reqDump))
+	log.Printf("Request: \nRequest URL: %s\n%s\n", r.URL.String(), string(reqDump))
 }
