@@ -29,7 +29,7 @@ AcmeReverseProxy solves those problems:
 - Copy the address of your target webserver where all requests will be proxied to e.g. https://yourserver.com
 - Now you can call the /add-domain endpoint to register a custom domain of your client, e.g. whitelabel.yourclient.com: 
 ```
-curl https://{APP_DOMAIN}/add-domain?domain= whitelabel.yourclient.com&target=https://yourserver.com -H X-Auth-Key=YOUR_RANODM_KEY -XPOST
+curl https://{APP_DOMAIN}/add-domain?domain=whitelabel.yourclient.com&target=https://yourserver.com -H X-Auth-Key=YOUR_RANODM_KEY -XPOST
 ```
 - Ask your client to add CNAME entry to his domain DNS e.g. `whitelabel.yourclient.com` should have a CNAME pointing to APP_DOMAIN
 - Visit `https://whitelabel.yourclient.com`. Your DNS resolver will find the canonical name of this domain (AcmeReverseProxy domain stored in APP_DOMAIN env variable) and will resolve it to an IP of AcmeReverseProxy's VPS

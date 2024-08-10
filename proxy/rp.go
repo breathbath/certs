@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"os"
 	"sync"
 )
 
@@ -80,8 +81,16 @@ func NewReverseProxy(target string) (*httputil.ReverseProxy, error) {
 			req.Header.Set("X-Forwarded-For", clientIP)
 		}
 
+		req.Header.Set("X-Real-IP", clientIP)
+
 		originalDirector(req)
+
+		utils.LogRequest(req, false)
 	}
+
+	errorLog := log.New(os.Stderr, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+
+	rp.ErrorLog = errorLog
 
 	return rp, nil
 }
