@@ -15,9 +15,14 @@ services:
     depends_on:
       - redis
   redis:
-    image: "redis:alpine"
+    image: "docker.io/bitnami/redis:7.4"
     restart: always
     ports:
       - "6379:6379"
     volumes:
-      - ./.redis:/data
+      - 'redis_data:/bitnami/redis/data'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+volumes:
+  redis_data:
+    driver: local
